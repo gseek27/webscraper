@@ -1,0 +1,54 @@
+import requests
+client = requests.session()
+
+from bs4 import BeautifulSoup
+
+import urllib2
+opener = urllib2.build_opener()
+opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+
+import csv
+from datetime import datetime
+
+url = ['http://www.thebluebook.com/search.html?region=33&searchTerm=steel&page=2', 'http://www.thebluebook.com/search.html?region=33&searchTerm=steel&page=3']
+
+#response = opener.open(url)
+#page = response.read()
+
+#from bs4 import BeautifulSoup
+#soup = BeautifulSoup(page, "lxml")
+
+#links1 = soup.findAll('a', attrs={'class': 'cname'})
+#links2 = soup.findAll('div', attrs={'class': 'addy_wrapper'})
+
+data = []
+
+
+#for link in links1:
+    #name = link.parent.text.replace("\u00a0","").encode('utf-8').strip()
+    #data.append(name)
+
+for i in url:
+    response = opener.open(i)
+    page = response.read()
+    soup = BeautifulSoup(page, "lxml")
+    links1 = soup.findAll('a', attrs={'class': 'cname'})
+    links2 = soup.findAll('div', attrs={'class': 'addy_wrapper'})
+    for link in links1:
+        name = link.parent.text.replace("\u00a0","").encode('utf-8').strip()
+        print name
+        for link in links2:
+            addy = link.parent.text.replace("\u00a0","").encode('utf-8').strip()
+            print addy
+        data.append((name, addy))
+    
+
+#for link in links2:
+    #addy = link.parent.text.replace("\u00a0","").encode('utf-8').strip()
+    #data.append(addy)
+
+with open('index.csv', 'a') as csv_file:
+    writer = csv.writer(csv_file)
+    for name, addy in data:
+        writer.writerow([name, addy, datetime.now()])
+
