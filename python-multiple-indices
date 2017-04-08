@@ -22,3 +22,11 @@ data = []
 
 for link in links:
     print link.parent.text
+    name = link.parent.text
+    data.append(name)
+
+
+with open('index.csv', 'a') as csv_file:
+    writer = csv.writer(csv_file)
+    for name in data:
+        writer.writerow([name])
