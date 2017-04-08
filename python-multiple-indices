@@ -2,17 +2,23 @@ import requests
 client = requests.session()
 
 import urllib2
-from bs4 import BeautifulSoup
+opener = urllib2.build_opener()
+opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 import csv
 from datetime import datetime
 
-url = 'http://www.reddit.com'
+url = 'http://www.thebluebook.com/search.html?region=33&searchTerm=steel&page=2'
 
-r = urllib2.Request(url, headers={'User-Agent' : "Magic Browser"})
-contents = urllib2.urlopen(r).read()
-soup = BeautifulSoup(contents, 'html.parser')
+response = opener.open(url)
+page = response.read()
 
-links = soup.findAll('a', attrs={'class': 'title'})
+from bs4 import BeautifulSoup
+soup = BeautifulSoup(page, "lxml")
+
+links = soup.findAll('a', attrs={'class': 'cname'})
+
+data = []
+
 for link in links:
     print link.parent.text
