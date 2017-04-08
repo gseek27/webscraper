@@ -8,24 +8,31 @@ import csv
 from datetime import datetime
 
 url = ['http://www.thebluebook.com/search.html?region=36&class=3310&searchTerm=Pipeline+Contractors&page=2', 'http://www.thebluebook.com/search.html?region=36&class=3310&searchTerm=Pipeline+Contractors&page=3']
+print url
 
 data = []
-
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+print data
 
 for pg in url:
-	pg = urllib2.Request(elem, headers={'User-Agent' : "Magic Browser"})
-	contents = urllib2.urlopen(pg).read()
-	soup = BeautifulSoup(contents, 'html.parser')
-	name_box = soup.find('a', attrs={'class': 'cname'})
-	name = name_box.text.strip()
-	addy_box = soup.find('div', attrs={'class':'addy_wrapper'})
-	addy = addy_box.text.strip()
-	data.append((name, addy))
+    pg = urllib2.Request(pg, headers={'User-Agent' : "Magic Browser"})
+    print pg
+    contents = urllib2.urlopen(pg).read()
+    print contents
+    soup = BeautifulSoup(contents, 'html.parser')
+    print soup
+    name_box = soup.find('a', attrs={'class': 'cname'})
+    print name_box
+    name = name_box.text.strip()
+    print name
+    addy_box = soup.find('div', attrs={'class':'addy_wrapper'})
+    print addy_box
+    addy = addy_box.text.strip()
+    print addy
+    data.append((name, addy))
+    print name
+    print addy
 
 with open('index.csv', 'a') as csv_file:
-	writer = csv.writer(csv_file)
-	for name, addy in data:
-		writer.writerow([name, addy, datetime.now()])
+    writer = csv.writer(csv_file)
+    for name, addy in data:
+        writer.writerow([name, addy, datetime.now()])
