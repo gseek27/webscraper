@@ -8,26 +8,17 @@ import csv
 from datetime import datetime
 
 url = ['http://www.thebluebook.com/search.html?region=36&class=3310&searchTerm=Pipeline+Contractors&page=2', 'http://www.thebluebook.com/search.html?region=36&class=3310&searchTerm=Pipeline+Contractors&page=3']
-print url
 
 data = []
-print data
 
 for pg in url:
     pg = urllib2.Request(pg, headers={'User-Agent' : "Magic Browser"})
-    print pg
     contents = urllib2.urlopen(pg).read()
-    print contents
     soup = BeautifulSoup(contents, 'html.parser')
-    print soup
     name_box = soup.find('a', attrs={'class': 'cname'})
-    print name_box
     name = name_box.text.strip()
-    print name
     addy_box = soup.find('div', attrs={'class':'addy_wrapper'})
-    print addy_box
     addy = addy_box.text.strip()
-    print addy
     data.append((name, addy))
     print name
     print addy
