@@ -12,12 +12,11 @@ soup = BeautifulSoup(contents, 'html.parser')
 
 quote_box = soup.find('span', attrs={'class': 'text'})
 quote = quote_box.text.strip()
-quote = quote.replace(u'\xa0', u' ')
+quote = quote.encode('utf-8').strip()
 print quote
 
-auth_box = soup.find('small' attrs={'class':'author'})
+auth_box = soup.find('small', attrs={'class': 'author'})
 auth = auth_box.text.strip()
-auth = auth.replace(u'\xa0', u' ')
 auth = auth.encode('utf-8').strip()
 print auth
 
@@ -26,4 +25,4 @@ from datetime import datetime
 
 with open('index2.csv', 'a') as csv_file:
     writer = csv.writer(csv_file)
-    writer.writerow([quote, auth, datetime.now()])
+    writer.writerow([quote, auth])
