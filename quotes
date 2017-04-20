@@ -1,28 +1,25 @@
-import requests
-client = requests.session()
-
 import urllib2
 from bs4 import BeautifulSoup
-
-url = 'http://quotes.toscrape.com/'
-r = urllib2.Request(url, headers={'User-Agent' : "Magic Browser"})
-contents = urllib2.urlopen(r).read()
-
-soup = BeautifulSoup(contents, 'html.parser')
-
-quote_box = soup.find('span', attrs={'class': 'text'})
-quote = quote_box.text.strip()
-quote = quote.encode('utf-8').strip()
-print quote
-
-auth_box = soup.find('small', attrs={'class': 'author'})
-auth = auth_box.text.strip()
-auth = auth.encode('utf-8').strip()
-print auth
 
 import csv
 from datetime import datetime
 
-with open('index2.csv', 'a') as csv_file:
+url = ['http://quotes.toscrape.com/', 'http://quotes.toscrape.com/page/2/']
+
+data = []
+
+for i in url:
+    page = urllib2.urlopen(i)
+    soup = BeautifulSoup(page, "lxml")
+    auth = soup.findAll('small', attrs={'class': 'author'})
+    author = auth
+    quo = soup.findAll('span', attrs={'class': 'text'})
+    quote = quo
+    print author
+    print quote
+    data.append((author, quote))
+
+with open('index.csv', 'a') as csv_file:
     writer = csv.writer(csv_file)
-    writer.writerow([quote, auth])
+    for author, quote in data:
+        writer.writerow([author, quote, datetime.now()])
