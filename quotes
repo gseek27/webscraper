@@ -4,21 +4,15 @@ from bs4 import BeautifulSoup
 import csv
 from datetime import datetime
 
-url = ['http://quotes.toscrape.com/', 'http://quotes.toscrape.com/page/2']
 web = 'http://quotes.toscrape.com/page/'
-
-for i in range(1,10):
-    site = str(web + str(i))
-    print site
-
-from unidecode import unidecode
-def remove_non_ascii(text):
-    return unidecode(unicode(text, encoding = "utf-8"))
 
 data = []
 
-for i in url:
-    page = urllib2.urlopen(i)
+for i in range(1,11):
+    site = str(web + str(i))
+    print ''
+    print site
+    page = urllib2.urlopen(site)
     soup = BeautifulSoup(page, "lxml")
     auth = soup.find_all('small', attrs={'class': 'author'})
     author = auth
