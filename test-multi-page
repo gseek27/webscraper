@@ -10,7 +10,7 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 import csv
 from datetime import datetime
 
-url = ['http://www.thebluebook.com/search.html?region=33&searchTerm=steel&page=2', 'http://www.thebluebook.com/search.html?region=33&searchTerm=steel&page=3']
+url = ['', '']
 
 #response = opener.open(url)
 #page = response.read()
