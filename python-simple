@@ -4,7 +4,7 @@ client = requests.session()
 import urllib2
 from bs4 import BeautifulSoup
 
-url = 'http://www.thebluebook.com/search.html?region=36&class=3310&searchTerm=Pipeline+Contractors&page=2'
+url = ''
 r = urllib2.Request(url, headers={'User-Agent' : "Magic Browser"})
 contents = urllib2.urlopen(r).read()
 
