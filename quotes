@@ -12,29 +12,50 @@ import time
 
 import itertools
 
+from random import randint
+from time import sleep
+
+
 web = 'http://quotes.toscrape.com/page/'
 
 data = []
 
-for i in range(1,11):
-    site = str(web + str(i))
-    print ''
-    print site
-    print ''
-    page = urllib2.urlopen(site)
-    soup = BeautifulSoup(page, "lxml")
-    quo =  soup.find_all('span', attrs={'class': 'text'})
-    auth = soup.find_all('small', attrs={'class': 'author'})
-    for (q, a) in itertools.izip_longest(quo, auth):
-        quo = q.text
-        auth = a.text
-        quote = quo.encode("ascii", "ignore")
-        quote = str('"' + quote + '"')
-        author = auth.encode("ascii", "ignore")
-        print str(quote + ' - ' + author)
-        print ''
-        data.append((author, quote))
-        time.sleep(10)
+
+index=1
+def test(index):
+    for index in range(1,20):
+        web = 'http://quotes.toscrape.com/page/'
+        site = str(web + str(index))
+        page = urllib2.urlopen(site)
+        soup = BeautifulSoup(page, "lxml")
+        pg = soup.find_all('li', attrs={'class': 'next'})
+        try:
+            if pg[0].text.encode("ascii", "ignore").strip() == 'Next':
+                next = pg[0].text.encode("ascii", "ignore").strip()
+                index = index+1
+        except IndexError:
+            #print index
+            for i in range(1,index+1):
+                web = 'http://quotes.toscrape.com/page/'
+                site = str(web + str(i))
+                page = urllib2.urlopen(site)
+                soup = BeautifulSoup(page, "lxml")
+                pg = soup.find_all('li', attrs={'class': 'next'})
+                quo =  soup.find_all('span', attrs={'class': 'text'})
+                auth = soup.find_all('small', attrs={'class': 'author'})
+                for (q, a) in itertools.izip_longest(quo, auth):
+                    quo = q.text.strip()
+                    auth = a.text.strip()
+                    quote = quo.encode("ascii", "ignore")
+                    quote = str('"' + quote + '"')
+                    author = auth.encode("ascii", "ignore")
+                    print str(quote + ' - ' + author)
+                    print ''
+                    data.append((author, quote))
+                    #sleep(randint(0,1))
+
+            break
+print test(index)
 
 with open('index.csv', 'a') as csv_file:
     writer = csv.writer(csv_file)
