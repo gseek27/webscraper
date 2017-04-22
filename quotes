@@ -22,8 +22,10 @@ data = []
 
 
 index=1
+
 def test(index):
-    for index in range(1,100):
+    j=1000
+    for index in range(1,j):
         web = 'http://quotes.toscrape.com/page/'
         site = str(web + str(index))
         page = urllib2.urlopen(site)
@@ -33,6 +35,7 @@ def test(index):
             if pg[0].text.encode("ascii", "ignore").strip() == 'Next':
                 next = pg[0].text.encode("ascii", "ignore").strip()
                 index = index+1
+                j=j+1
         except IndexError:
             #print index
             for i in range(1,index+1):
