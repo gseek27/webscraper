@@ -21,13 +21,13 @@ for i in range(1,11):
     for line in quo:
         quotes = line.text
         quote = quotes.encode("ascii", "ignore")
-        #print quote
+        print quote
         print ''
     print ''
     for line in auth:
         authors = line.text
         author = authors.encode("ascii", "ignore")
-        #print author
+        print author
         print ''
 
     data.append((author, quote))
