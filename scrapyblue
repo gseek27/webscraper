@@ -1,0 +1,69 @@
+
+import scrapy
+import urlparse
+
+import csv
+from datetime import datetime
+" "
+data = []
+import time
+
+class CompanySpider(scrapy.Spider):
+    name = "blue"
+    start_urls = [
+        'http://www.thebluebook.com/search.html?region=33&class=2844&searchTerm=Mechanical+Contractors&page=1',
+    ]
+
+    def parse(self, response):
+        for company in response.css("div.col-sm-8.col-xs-12.search-results-col"):
+            yield {
+                'name': company.css('a.cname::text').extract(),
+                'location': company.css('div.addy_wrapper::text').extract(),
+            }
+            data.append((name, location))
+            print name
+            print location
+
+       
+        pages = response.css("div.dropdown.pager-wrapper")
+        length = len(''.join(start_urls))
+        site = ''.join(start_urls)
+        url = site[0:length - 1]
+        pagelist = pages.css('li a::attr(href)').extract()
+        for index in range(2,len(pagelist)+1):
+            page = str(url)+str(index)
+            sleep(randint(0,10))
+            #next_page = response.urljoin(page)
+            print page
+            yield scrapy.Request(page, callback=self.parse)
+        
+
+with open('scrapy_blue.csv', 'a') as csv_file:
+    writer = csv.writer(csv_file)
+    for name, location in data:
+        writer.writerow([name, location, datetime.now()])
+
+" "
+# scrapy crawl blue -o blue.jl
+#bash
+
+
+
+# scrapy shell 'http://www.thebluebook.com/search.html?region=33&class=2844&searchTerm=Mechanical+Contractors&page=1'
+#scrapyshell
+
+# response.css("div.col-sm-8.col-xs-12.search-results-col")
+
+# company = response.css("div.col-sm-8.col-xs-12.search-results-col")
+
+# name = company.css("a.cname::text").extract()
+# addy = company.css("div.addy_wrapper::text").extract()
+
+#pages = response.css("div.dropdown.pager-wrapper")
+#page = pages.css("a::text").extract()
+
+
+#for node in response.xpath("//ul"):
+#    print node.xpath("@class").extract()
+
+#    response.xpath("//a/text()").extract()
