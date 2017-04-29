@@ -33,7 +33,7 @@ class BlueBookSpider(scrapy.Spider):
         pagecount = len(pagelist)
         
  
-        for index in range(1,pagecount):  
+        for index in range(1,pagecount+1):  
             page = str(url)+str(index)
             print page
             pg = pagelist[index]
