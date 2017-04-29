@@ -1,27 +1,20 @@
-
 import scrapy
 import urlparse
 
 import csv
 from datetime import datetime
-" "
+
 data = []
 import time
 from time import sleep
 
-from random import randint
+from random import randint        
 
-start_urls = [
-        'http://www.thebluebook.com/search.html?region=33&class=2844&searchTerm=Mechanical+Contractors&page=1',
-    ]
-
-class CompanySpider(scrapy.Spider):
+class BlueBookSpider(scrapy.Spider):
     name = "blue"
     start_urls = [
         'http://www.thebluebook.com/search.html?region=33&class=2844&searchTerm=Mechanical+Contractors&page=1',
     ]
-
-
 
     def parse(self, response):
         for company in response.css("div.col-sm-8.col-xs-12.search-results-col"):
@@ -29,36 +22,34 @@ class CompanySpider(scrapy.Spider):
                 'name': company.css('a.cname::text').extract(),
                 'location': company.css('div.addy_wrapper::text').extract(),
             }
-            sleep(randint(0,10))
-
-            with open('scrapy_blue.csv', 'a') as csv_file:
-                writer = csv.writer(csv_file)
-                for name, location in data:
-                    writer.writerow([name, location, datetime.now()])
-                    print name
-                    print location
+        #sleep(randint(0,10))
+            
        
-                start_urls = [
-        'http://www.thebluebook.com/search.html?region=33&class=2844&searchTerm=Mechanical+Contractors&page=1',
-    ]
-                pages = response.css("div.dropdown.pager-wrapper")
-                length = len(''.join(start_urls))
-                site = ''.join(start_urls)
-                url = site[0:length - 1]
-                pagelist = pages.css('li a::attr(href)').extract()
-                pagecount = len(pagelist)
-                
-                for index in range(2,pagecount+1):
-                    page = str(url)+str(index)
-                    print page
-                    #next_page = response.urljoin(pagelist[index])
-                    #next_page = response.urljoin(page)
-                    #print next_page
-                    yield scrapy.Request(page, callback=self.parse)
-                    sleep(randint(0,10))
+        pages = response.css("div.dropdown.pager-wrapper")
+        length = len(''.join(BlueBookSpider.start_urls[0]))
+        site = ''.join(BlueBookSpider.start_urls[0])
+        url = site[0:length - 1]
+        pagelist = pages.css('li a::attr(href)').extract()
+        #pg = ''.join(pagelist)
+        pagecount = len(pagelist)
+ 
+        for index in range(2,8):
+            page = str(url)+str(index)
+            print page
+            pg = pagelist[index]  
+            #next_page = response.urljoin(pagelist[index])
+            next_page = response.urljoin(pg)
+            #print next_page
+            yield scrapy.Request(next_page, callback=self.parse)
+            #sleep(randint(0,10))
+
+            #next_page = response.css('li.next a::attr(href)').extract_first()
+            #if next_page is not None:
+#                        next_page = response.urljoin(next_page)
+#                        yield scrapy.Request(next_page, callback=self.parse)
+
             
 
-" "
 # scrapy crawl blue -o blue.jl
 #bash: pwd cd
 
@@ -80,4 +71,4 @@ class CompanySpider(scrapy.Spider):
 # for node in response.xpath("//ul"):
 #    print node.xpath("@class").extract()
 
-#    response.xpath("//a/text()").extract()
+# response.xpath("//a/text()").extract()
