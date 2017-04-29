@@ -23,8 +23,7 @@ class BlueBookSpider(scrapy.Spider):
                 'location': company.css('div.addy_wrapper::text').extract(),
             }
         #sleep(randint(0,10))
-            
-       
+
         pages = response.css("div.dropdown.pager-wrapper")
         length = len(''.join(BlueBookSpider.start_urls[0]))
         site = ''.join(BlueBookSpider.start_urls[0])
@@ -32,17 +31,19 @@ class BlueBookSpider(scrapy.Spider):
         pagelist = pages.css('li a::attr(href)').extract()
         #pg = ''.join(pagelist)
         pagecount = len(pagelist)
+        
  
-        for index in range(2,8):
+        for index in range(1,pagecount+1):  
             page = str(url)+str(index)
             print page
-            pg = pagelist[index]  
+            pg = pagelist[index]
             #next_page = response.urljoin(pagelist[index])
             next_page = response.urljoin(pg)
             #print next_page
             yield scrapy.Request(next_page, callback=self.parse)
             #sleep(randint(0,10))
 
+            
             #next_page = response.css('li.next a::attr(href)').extract_first()
             #if next_page is not None:
 #                        next_page = response.urljoin(next_page)
