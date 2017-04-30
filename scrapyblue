@@ -16,13 +16,16 @@ class BlueBookSpider(scrapy.Spider):
         'http://www.thebluebook.com/search.html?region=33&class=2844&searchTerm=Mechanical+Contractors&page=1',
     ]
 
+    company = response.css('div.col-sm-8.col-xs-12.search-results-col')
+
     def parse(self, response):
         for company in response.css("div.col-sm-8.col-xs-12.search-results-col"):
-            yield {
-                'name': company.css('a.cname::text').extract(),
-                'location': company.css('div.addy_wrapper::text').extract(),
+            company = {
+                'name': company.css('a.cname::text').extract_first(),
+                'location': company.css('div.addy_wrapper::text').extract_first(),
             }
-        #sleep(randint(0,10))
+            yield company
+            #sleep(randint(0,10))
 
         pages = response.css("div.dropdown.pager-wrapper")
         length = len(''.join(BlueBookSpider.start_urls[0]))
