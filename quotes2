@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 import scrapy
-#import pandas as pd
 
 from fake_useragent import UserAgent
 ua = UserAgent()
@@ -9,40 +7,37 @@ header = {'User-Agent':str(ua.random)}
 class NewSpider(scrapy.Spider):
     name = "quote_test"
     start_urls = ['http://quotes.toscrape.com']
-    #start_urls = [login_url]
-    #allowed_domains = ["toscrape.com"]
-
-#    def parse(self, response):
-        #login to the site with credentials and then go to next function for the main page
-        #extract csrf token, create dict with form values, submit a post request to it
-#        token = response.css('input[name="csrf_token"]::attr(value)').extract_first()
-#        data = {
-#            'csrf_token': token,
-#            'username': 'abc',
-#            'password': 'abc',
-#            }
-#        yield scrapy.FormRequest(url=self.login_url,formdata=data, callback=self.parseb)
-
-#    def parseb(self, response):
-        #scrape the main page for author info and follow link to author page and scrape it
-#        self.log('I just visited: ' + response.url)
-#        for q in response.css('div.quote'):
-            #q = response.css('div.quote')[0]
-#            yield {
-#                'quote': q.css('span.text::text').extract_first(),
-#                'author': q.css('small.author::text').extract_first(),
-#                'author_url': q.css(
-#                    'small.author ~ a[href*="goodreads.com"]::attr(href)'
-#                ).extract_first()
-#            }
 
     def parse(self, response):
+        #SUCCESS
+        #scrape the main pages for author info
+        self.log('I just visited: ' + response.url)
+        for q in response.css('div.quote'):
+            #q = response.css('div.quote')[0]
+            item = {
+                'quote': q.css('span.text::text').extract_first(),
+                'author': q.css('small.author::text').extract_first(),
+            }
+            yield item
+
+        #follow pagination link to next page
+        #SUCCESS
+        next_page_url = response.css('li.next > a::attr(href)').extract_first()
+        print next_page_url
+        if next_page_url:
+            next_page_url = response.urljoin(next_page_url)
+            print next_page_url
+            yield scrapy.Request(url=next_page_url, callback=self.parse)
+
+        #SUCCESS??
+        #find author links and capture url for author page
         urls = response.css('div.quote > span > a::attr(href)').extract()
         for url in urls:
             url = response.urljoin(url)
             yield scrapy.Request(url=url, callback=self.parse_details)
 
-        #follow pagination link
+        #follow pagination link to next page
+        #SUCCESS??
         next_page_url = response.css('li.next > a::attr(href)').extract_first()
         print next_page_url
         if next_page_url:
@@ -52,28 +47,15 @@ class NewSpider(scrapy.Spider):
 
     def parse_details(self, response):
         #scrape bio and descrption info from author page
+        #SUCCESS??
         yield {
             'name': response.css('h3.author-title::text').extract_first(),
             'birth_date': response.css('span.author-born-date::text').extract_first(),
         }
             
- #       length = len(''.join(QuoteSpider1.start_urls[0]))
-#        print length
-#        site = ''.join(QuoteSpider1.start_urls[0])
-#        print site
-#        url = site[0:length - 3]
-#        print url
-#        pagecount = 10
 
-#        for index in range(2,pagecount+1):
-#            page = str(url)+str('/')+str(index)
-#            print page
-            #next_page = response.urljoin(page)
-            #print next_page
-#            yield scrapy.Request(page, callback=self.parse)
-
-#bash: pwd cd
-#bash: scrapy shell <'start_url'>
+#bash: pwd cd /Users/kharelthompson/Documents/Coding/python_files/pythonfiles
+#bash: scrapy shell 'http://quotes.toscrape.com'
 #make sure spider is in spider folder
 #bash: scrapy crawl quote-test -o quote-test.jl
 #bash: scrapy crawl quote-test -o quote-test.json (to see results)
