@@ -1,0 +1,98 @@
+# -*- coding: utf-8 -*-
+import scrapy
+from fake_useragent import UserAgent
+import requests
+
+class BlueBookSpider(scrapy.Spider):
+    name = "bluebook"
+    allowed_domains = ["www.thebluebook.com"]
+    start_urls = ['http://www.thebluebook.com/search.html?region=33&class=2844&searchTerm=Mechanical+Contractors&page=1']
+    ua = UserAgent()
+    header = {'User-Agent':str(ua.random)}
+
+    def parse(self, response):
+        for company in response.css("div.col-sm-8.col-xs-12.search-results-col"):
+            company = {
+                'name': company.css('a.cname::text').extract(),
+                'location': company.css('div.addy_wrapper::text').extract(),
+            }
+            yield company
+
+    def parse1(self,response):
+        urls = response.css('div.col-sm08.col-xs-12 > a::attr(href)').extract()
+        for url in urls:
+            url = response.urljoin(url)
+            yield scrapy.Request(url=url, callback=self.parse_details)
+        
+
+        pages = response.css("div.dropdown.pager-wrapper")
+        length = len(''.join(BlueBookSpider.start_urls[0]))
+        site = ''.join(BlueBookSpider.start_urls[0])
+        url = site[0:length - 1]
+        pagelist = pages.css('li a::attr(href)').extract()
+        #pg = ''.join(pagelist)
+        pagecount = len(pagelist)
+
+        for index in range(1,pagecount+1):  
+            page = str(url)+str(index)
+            print page
+            pg = pagelist[index]
+            #next_page = response.urljoin(pagelist[index])
+            next_page = response.urljoin(pg)
+            #print next_page
+            yield scrapy.Request(next_page, callback=self.parse)
+
+    def parse_details(self, response):
+        url = response.css('div.well.well-sm.p0.m0 > li.prjSpcEditNav > a::attr(href)').extract()
+        url = response.urljoin(url)
+        yield scrapy.Request(url=url, callback=self.parse_project)
+
+    def parse_project(self, response):
+        yield {
+            'phone': response.css('h2.proViewSubHeader.m0.euic > span.telephone::text').extract(),
+            'views': response.css('div.summaryViewsNav > span. > i.fa fa-bar-chart::text').extract()
+            'specialities': response.css('div.row::text').extract(),
+            'sector': response.css('small.text-dark::text')[0].extract(),
+            'size': response.css('small.text-dark::text')[1].extract(),
+            'types': response.css('small.text-dark::text')[2].extract(),
+        }
+        yield scrapy.Request(url=url, callback=self.parse_about)
+            
+     def parse_about(self, response):
+        yield {
+
+    def parse_locations(self, response):
+    yield {
+
+    def parse_contacts(self, response):
+        yield {
+
+    def parse_classifications(self, response):
+        yield {
+
+    def parse_scope(self, response):
+        yield {
+
+    def parse_otherservices(self, response):
+        yield {
+
+    def parse_project(self, response):
+        yield {
+
+    def parse_preferredbrands(self, response):
+        yield {
+
+    def parse_currentprojects(self, response):
+        yield {
+
+    def parse_completedprojects(self, response):
+        yield {
+
+    def parse_referrals(self, response):
+        yield {
+            
+    def parse_licenses(self, response):
+        yield {
+
+    def parse_associations(self, response):
+        yield {
