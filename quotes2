@@ -54,7 +54,7 @@ class NewSpider(scrapy.Spider):
         }
             
 
-#bash: pwd cd /Users/kharelthompson/Documents/Coding/python_files/pythonfiles
+#bash: pwd cd /Users/YOURNAME/Documents/Coding/python_files/pythonfiles
 #bash: scrapy shell 'http://quotes.toscrape.com'
 #make sure spider is in spider folder
 #bash: scrapy crawl quote-test -o quote-test.jl
@@ -66,4 +66,4 @@ class NewSpider(scrapy.Spider):
 
 #go to proj folder with cfg
 #bash: scrapy crawl quote-test
-# cd /Users/kharelthompson/Documents/Coding/python_files/pythonfiles
+# cd /Users/YOURNAME/Documents/Coding/python_files/pythonfiles
